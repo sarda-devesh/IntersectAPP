@@ -1,7 +1,5 @@
 package com.example.intersect;
 
-import java.util.Date;
-
 public class CalendarEvent implements Comparable<CalendarEvent>{
 
     private String title;
@@ -60,7 +58,7 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
     public int compareTo(CalendarEvent other) {
         int first = Long.compare(this.begin, other.begin);
         if(first == 0) {
-            Long.compare(this.end, other.end);
+            first = Long.compare(other.end, this.end);
         }
         return first;
     }

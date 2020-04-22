@@ -1,27 +1,27 @@
 package com.example.intersect;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-
-import org.w3c.dom.Text;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -37,10 +37,14 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     long start_time = -1;
     long end_time = -1;
     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+    DatabaseReference teamsdatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        teamsdatabase = FirebaseDatabase.getInstance().getReference("Teams");
+
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         setContentView(R.layout.activity_main);
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 get_events();
             }
         });
+
     }
 
     @Override
@@ -119,8 +124,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         if(ce.size() == 0) {
             return;
         }
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
-        ll.removeAllViews();
+        ScrollView sv = findViewById(R.id.ll);
+        sv.removeAllViews();
         for(CalendarEvent current: ce) {
             TextView tv = new TextView(getApplicationContext());
             tv.setLayoutParams(lp);
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
             tv.setText(message);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.f);
-            ll.addView(tv);
+            sv.addView(tv);
         }
     }
 

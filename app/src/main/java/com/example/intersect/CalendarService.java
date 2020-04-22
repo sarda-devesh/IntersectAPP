@@ -1,20 +1,14 @@
 package com.example.intersect;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.text.format.DateUtils;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class CalendarService {
@@ -41,6 +35,7 @@ public class CalendarService {
                     }
                 }
             }
+            Collections.sort(ce);
             return ce;
         }
         catch(Exception e)
