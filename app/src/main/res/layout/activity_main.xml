@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        app:srcCompat="@drawable/img_1" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -14,59 +22,70 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="40dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="User Teams"
+        android:textSize="24sp" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/users_teams"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Create/Join a team"
+        android:textSize="24sp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:orientation="vertical">
 
-        <Button
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose start day"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/start_day" />
+            android:id="@+id/team_name_enter"
+            android:layout_marginBottom="20dp"
+            android:hint="Enter your team name"
+            android:textSize="18dp" />
 
         <Button
-            android:id="@+id/end_day"
+            android:id="@+id/create_team"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/team_name_enter"
+            android:text="Create team" />
+
+        <EditText
+            android:id="@+id/join_existing_team"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_gravity="end"
-            android:text="Choose end day" />
+            android:layout_marginBottom="20dp"
+            android:hint="Enter team ID: " />
 
-        <TextView
+        <Button
+            android:id="@+id/join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="None"
-            android:textSize="12sp"
-            android:id="@+id/start_text"
-            android:layout_below="@id/start_day"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="None"
-            android:textSize="12sp"
-            android:id="@+id/end_text"
-            android:layout_below="@id/end_day"
-            android:layout_alignParentRight="true"/>
+            android:layout_below="@+id/join_existing_team"
+            android:layout_alignParentRight="true"
+            android:text="Join Team" />
 
     </RelativeLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_gravity="center_horizontal"
-        android:text="FIND"
-        android:id="@+id/function_executor"
-        android:layout_marginBottom="25dp"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/ll"/>
 
 </LinearLayout>

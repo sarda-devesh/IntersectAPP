@@ -51,7 +51,7 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
 
     @Override
     public String toString(){
-        return getTitle() + " " + getBegin() + " " + getEnd() + " " + getLocation();
+        return getBegin() + "->" + getEnd();
     }
 
     @Override

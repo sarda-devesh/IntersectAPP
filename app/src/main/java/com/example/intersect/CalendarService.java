@@ -8,17 +8,18 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 
 public class CalendarService {
 
-    public static List<CalendarEvent> readCalendar(Context context, long lower, long higher, String email) {
+    public static ArrayList<CalendarEvent> readCalendar(Context context, long lower, long higher, String email) {
         ContentResolver contentResolver = context.getContentResolver();
+        email = email.replace(",", ".");
+        System.out.println("Looking for " + lower + " " + higher + " " + email);
         Cursor cursor = contentResolver.query(Uri.parse("content://com.android.calendar/events"),
                 new String[]{"calendar_displayName","title", "dtstart", "dtend", "eventLocation"},
                 null, null, null);
-        List<CalendarEvent> ce = new ArrayList<CalendarEvent>();
+        ArrayList<CalendarEvent> ce = new ArrayList<CalendarEvent>();
         try
         {
             if(cursor.getCount() > 0)
@@ -30,12 +31,13 @@ public class CalendarService {
                     long end =  cursor.getLong(3);
                     String location = "" + cursor.getString(4);
                     if(start > lower && start < higher && display_name.equals(email)) {
-                        CalendarEvent current = new CalendarEvent(event_name, start, start, location);
+                        CalendarEvent current = new CalendarEvent(event_name, start, end, location);
                         ce.add(current);
                     }
                 }
             }
             Collections.sort(ce);
+            System.out.println("The Calendar looks like " + ce.toString());
             return ce;
         }
         catch(Exception e)

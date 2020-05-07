@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "847617118615",
+    "firebase_url": "https://team-intersec.firebaseio.com",
+    "project_id": "team-intersec",
+    "storage_bucket": "team-intersec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847617118615:android:181dbbec7c1d1cbee4f4d2",
+        "android_client_info": {
+          "package_name": "com.example.intersect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847617118615-qqjipvcv930of1sd856tjsvk9rj77lsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoZ9jx_bv3whPtQVnJNxPpdZvPJu2GHUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847617118615-qqjipvcv930of1sd856tjsvk9rj77lsk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
