@@ -62,6 +62,42 @@
         android:layout_marginBottom="20dp"
         android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/start_chooser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CHOOSE START TIME" />
+
+        <Button
+            android:id="@+id/end_chooser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="CHOOSE END TIME" />
+
+        <TextView
+            android:id="@+id/start_time_choosen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start_chooser"
+            android:text="None" />
+
+        <TextView
+            android:id="@+id/end_time_choosen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/end_chooser"
+            android:layout_alignParentRight="true"
+            android:text="None" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
         <EditText
             android:id="@+id/number_hours"
             android:layout_width="wrap_content"
@@ -81,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/number_hours"
-            android:text="Hours"
+            android:text="Meeting Hours"
             android:textSize="12sp" />
 
         <TextView
@@ -89,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/number_minutes"
             android:layout_alignParentRight="true"
-            android:text="Minutes"
+            android:text="Meeting Minutes"
             android:textSize="12sp" />
 
     </RelativeLayout>

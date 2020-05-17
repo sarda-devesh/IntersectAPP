@@ -1,6 +1,7 @@
 package com.example.intersect;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -10,6 +11,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,18 @@ public class teamdisplay extends AppCompatActivity implements DatePickerDialog.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teamdisplay);
+        intialize_buttons();
+        teamsdatabase = FirebaseDatabase.getInstance().getReference("Teams");
+        if (getIntent().hasExtra("Email")) {
+            user_email = getIntent().getStringExtra("Email");
+        }
+        if (getIntent().hasExtra("Team_id")) {
+            String team_id = getIntent().getStringExtra("Team_id");
+            read_user_team(team_id);
+        }
+    }
+
+    private void intialize_buttons() {
         findViewById(R.id.start_day).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,14 +73,44 @@ public class teamdisplay extends AppCompatActivity implements DatePickerDialog.O
                 datePicker.show(getSupportFragmentManager(), "Start day picker");
             }
         });
-        teamsdatabase = FirebaseDatabase.getInstance().getReference("Teams");
-        if (getIntent().hasExtra("Email")) {
-            user_email = getIntent().getStringExtra("Email");
-        }
-        if (getIntent().hasExtra("Team_id")) {
-            String team_id = getIntent().getStringExtra("Team_id");
-            read_user_team(team_id);
-        }
+        findViewById(R.id.start_chooser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getApplicationContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        TextView tv = findViewById(R.id.start_time_choosen);
+                        String message = selectedHour + ":" + selectedMinute;
+                        tv.setText(message);
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Start Time");
+                mTimePicker.show();
+            }
+        });
+        findViewById(R.id.end_chooser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getApplicationContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        TextView tv = findViewById(R.id.end_time_choosen);
+                        String message = selectedHour + ":" + selectedMinute;
+                        tv.setText(message);
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select End Time");
+                mTimePicker.show();
+            }
+        });
     }
 
     private void write_values(ArrayList<CalendarEvent> events) {
@@ -141,6 +185,16 @@ public class teamdisplay extends AppCompatActivity implements DatePickerDialog.O
         long team_end_day = end_day;
         EditText et_hour = findViewById(R.id.number_hours);
         EditText et_minute = findViewById(R.id.number_minutes);
+        TextView start_message = findViewById(R.id.start_time_choosen);
+        String[] start_broken = start_message.getText().toString().split(":");
+        TextView end_message = findViewById(R.id.end_time_choosen);
+        String[] end_broken = start_message.getText().toString().split(":");
+        if (start_broken.length != 2 || end_broken.length != 2) {
+            Toast.makeText(getApplicationContext(), "Please make sure that all fields are filled in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        team_start_day += TimeUnit.HOURS.toMillis(Integer.parseInt(start_broken[0])) + TimeUnit.MINUTES.toMillis(Integer.parseInt(start_broken[1]));
+        team_end_day += TimeUnit.HOURS.toMillis(Integer.parseInt(end_broken[0])) + TimeUnit.MINUTES.toMillis(Integer.parseInt(end_broken[1]));
         int length_hour = Integer.parseInt(et_hour.getHint().toString());
         String et_hour_message = et_hour.getText().toString();
         if (et_hour_message.length() != 0) {
@@ -151,6 +205,7 @@ public class teamdisplay extends AppCompatActivity implements DatePickerDialog.O
         if (length_minute_message.length() != 0) {
             length_minutes = Integer.parseInt(length_minute_message);
         }
+
         long total_length = TimeUnit.HOURS.toMillis(length_hour) + TimeUnit.MINUTES.toMillis(length_minutes);
         boolean valid = team_start_day > 0 && team_end_day > 0 && total_length > 0;
         boolean updated = team_start_day != current.getStart_time() || team_end_day != current.getEnd_time() || total_length != current.getMeeting_time();

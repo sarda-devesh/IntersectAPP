@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class TeamUnit {
 
@@ -57,6 +58,56 @@ public class TeamUnit {
         System.out.println("Finished updating values: " + this.user_activity.keySet());
     }
 
+    private long[] get_best_range(long range_start, long range_end, ArrayList<CalendarEvent> complete_list) {
+        long[] suggest_started = {-1590L, -10};
+        ArrayList<CalendarEvent> events = new ArrayList<CalendarEvent>();
+        CalendarEvent ce_current = complete_list.get(0);
+        while (ce_current.getBegin() > range_start && ce_current.getEnd() < range_end) {
+            events.add(complete_list.remove(0));
+            ce_current = complete_list.get(0);
+        }
+        int index = 0;
+        while (index < events.size()) {
+            CalendarEvent item = events.get(index);
+            index += 1;
+            while (index < events.size() && events.get(index).getBegin() < item.getEnd()) {
+                CalendarEvent current = events.remove(index);
+                item.setEnd(Math.max(item.getEnd(), current.getEnd()));
+            }
+        }
+        ArrayList<String> gaps = new ArrayList<String>();
+        CalendarEvent first_start = events.get(0);
+        if (first_start.getBegin() > this.start_time) {
+            gaps.add(this.start_time + "," + first_start.getBegin());
+        }
+        for (int i = 1; i < events.size(); i++) {
+            gaps.add(events.get(i - 1).getEnd() + "," + events.get(i).getBegin());
+        }
+        first_start = events.get(events.size() - 1);
+        if (first_start.getEnd() < this.end_time) {
+            gaps.add(first_start.getEnd() + "," + this.end_time);
+        }
+        Collections.sort(gaps, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] s1 = o1.split(",");
+                String[] s2 = o2.split(",");
+                long difference1 = Math.abs(Long.parseLong(s1[1]) - Long.parseLong(s1[0]));
+                long differenc2 = Math.abs(Long.parseLong(s2[1]) - Long.parseLong(s2[0]));
+                return Long.compare(difference1, differenc2);
+            }
+        });
+        String[] best_gap = gaps.get(gaps.size() - 1).split(",");
+        long best_start = Long.parseLong(best_gap[0]);
+        long best_end = Long.parseLong(best_gap[1]);
+        if (best_end - best_start >= this.meeting_time) {
+            long middle = (best_end + best_start) / 2;
+            suggest_started[0] = middle - this.meeting_time / 2;
+            suggest_started[1] = best_end - best_start;
+        }
+        return suggest_started;
+    }
+
 
     public void figure_user_times() {
         if (all_entries_filled()) {
@@ -69,49 +120,15 @@ public class TeamUnit {
                 }
             }
             Collections.sort(events);
-            System.out.println("General: " + events.toString());
-            int index = 0;
-            while (index < events.size()) {
-                CalendarEvent item = events.get(index);
-                index += 1;
-                while (index < events.size() && events.get(index).getBegin() < item.getEnd()) {
-                    CalendarEvent current = events.remove(index);
-                    item.setEnd(Math.max(item.getEnd(), current.getEnd()));
+            long starting_range = this.start_time + TimeUnit.HOURS.toMillis(15);
+            long greatest_difference = 0;
+            this.start_time = -1590L;
+            while (starting_range < this.end_time) {
+                long[] suggest_data = this.get_best_range(starting_range, starting_range + TimeUnit.HOURS.toMillis(6), events);
+                if (suggest_data[0] > 0 && suggest_data[1] > greatest_difference) {
+                    this.start_time = suggest_data[0];
+                    greatest_difference = suggest_data[1];
                 }
-            }
-            System.out.println("Combined: " + events.toString());
-            ArrayList<String> gaps = new ArrayList<String>();
-            CalendarEvent first_start = events.get(0);
-            if (first_start.getBegin() > this.start_time) {
-                gaps.add(this.start_time + "," + first_start.getBegin());
-            }
-            for (int i = 1; i < events.size(); i++) {
-                gaps.add(events.get(i - 1).getEnd() + "," + events.get(i).getBegin());
-            }
-            first_start = events.get(events.size() - 1);
-            if (first_start.getEnd() < this.end_time) {
-                gaps.add(first_start.getEnd() + "," + this.end_time);
-            }
-            Collections.sort(gaps, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    String[] s1 = o1.split(",");
-                    String[] s2 = o2.split(",");
-                    long difference1 = Math.abs(Long.parseLong(s1[1]) - Long.parseLong(s1[0]));
-                    long differenc2 = Math.abs(Long.parseLong(s2[1]) - Long.parseLong(s2[0]));
-                    return Long.compare(difference1, differenc2);
-                }
-            });
-            System.out.println("Gaps: " + gaps.toString());
-            String[] best_gap = gaps.get(gaps.size() - 1).split(",");
-            long best_start = Long.parseLong(best_gap[0]);
-            long best_end = Long.parseLong(best_gap[1]);
-            if (best_end - best_start >= this.meeting_time) {
-                long middle = (best_end + best_start) / 2;
-                this.meeting_start = middle - this.meeting_time / 2;
-                System.out.println("Range: " + this.meeting_start + " " + this.meeting_time);
-            } else {
-                this.meeting_start = -1590L;
             }
         }
     }
